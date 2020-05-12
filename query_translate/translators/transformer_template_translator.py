@@ -1,3 +1,5 @@
+import errno
+import os
 import time
 from functools import partial
 import random
@@ -31,6 +33,7 @@ class TransformerTemplateTranslator:
         self.in_tokens_file = './checkpoints/in_tokens_'
         self.out_tokens_file = './checkpoints/out_tokens_'
         self.checkpoint_path = "./checkpoints/train"
+        self._create_log_folder('./checkpoints')
 
     def save_dataset(self):
         manager = DynamicUtteranceDataManager(generate_data=True)
@@ -311,6 +314,15 @@ class TransformerTemplateTranslator:
         dec_target_padding_mask = TfUtils.create_padding_mask(tar)
         combined_mask = tf.maximum(dec_target_padding_mask, look_ahead_mask)
         return enc_padding_mask, combined_mask, dec_padding_mask
+
+    @staticmethod
+    def _create_log_folder(folder_name: str):
+        """Create directory for checkpoints if not yet exists."""
+        try:
+            os.makedirs(folder_name)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
 
 if __name__ == "__main__":

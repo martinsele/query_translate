@@ -1,3 +1,5 @@
+import errno
+import os
 import time
 from functools import partial
 from typing import Iterable
@@ -23,6 +25,7 @@ class BiLSTMTemplateTranslator:
         self.in_tokens_file = './checkpoints/lstm_in_tokens_'
         self.out_tokens_file = './checkpoints/lstm_out_tokens_'
         self.checkpoint_path = "./checkpoints/train_lstm"
+        self._create_log_folder('./checkpoints')
         self.max_length = 50
         self.embedding_dim = 256
         self.units = 1024
@@ -181,6 +184,14 @@ class BiLSTMTemplateTranslator:
         loss_ *= mask
         return tf.reduce_mean(loss_)
 
+    @staticmethod
+    def _create_log_folder(folder_name: str):
+        """Create directory for checkpoints if not yet exists."""
+        try:
+            os.makedirs(folder_name)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
 if __name__ == "__main__":
     classifier = BiLSTMTemplateTranslator()
