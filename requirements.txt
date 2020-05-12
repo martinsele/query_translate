@@ -1,0 +1,13 @@
+# data and ML
+numpy
+scikit-learn
+tensorflow == 2.1.0
+tensorflow_datasets
+
+
+# utils
+loguru
+pytest
+Unidecode
+matplotlib
+dataclasses
